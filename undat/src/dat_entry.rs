@@ -1,6 +1,6 @@
 #[derive(Debug)]
 pub struct DatEntry {
-    pub filename: String,
+    pub filepath: String,
     unk_value: u32,
     pub entry_type: DatEntryType,
     pub original_size: usize,
@@ -11,7 +11,7 @@ pub struct DatEntry {
 
 impl DatEntry {
     pub fn len(&self) -> usize {
-        self.filename.len() + 1 + 24
+        self.filepath.len() + 1 + 24
     }
 }
 
@@ -71,7 +71,7 @@ impl TryFrom<&[u8]> for DatEntry {
         };
 
         Ok(DatEntry {
-            filename,
+            filepath: filename,
             unk_value: u32::from_le_bytes(unk_value_slice),
             entry_type,
             original_size: u32::from_le_bytes(original_size_slice) as usize,
