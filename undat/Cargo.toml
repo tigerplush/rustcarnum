@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 clap = { version = "4.5.37", features = ["derive"] }
+console = "0.15.11"
+indicatif = "0.17.11"
 zune-inflate = "0.2.54"
