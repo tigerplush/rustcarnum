@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct DatEntry {
     pub filepath: String,
@@ -22,6 +23,7 @@ pub enum DatEntryType {
     Directory,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum DatEntryError {
     NoFilenameEnd,

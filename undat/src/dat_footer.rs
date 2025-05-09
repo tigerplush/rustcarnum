@@ -1,5 +1,6 @@
 use std::ops::Range;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct DatFooter {
     uuid: [u8; 16],
@@ -16,6 +17,7 @@ impl DatFooter {
     const DAT_ENTRY_RANGE: Range<usize> = 24..28;
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum DatFooterError {
     InvalidLength,
