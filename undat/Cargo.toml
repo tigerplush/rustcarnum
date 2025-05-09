@@ -1,0 +1,7 @@
+[package]
+name = "undat"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+zune-inflate = "0.2.54"
