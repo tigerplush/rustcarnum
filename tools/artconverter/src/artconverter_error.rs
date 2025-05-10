@@ -4,7 +4,7 @@ pub enum ArtconverterError {
     SliceConversion(std::array::TryFromSliceError),
     BitmapSaveError(String),
     BitmapPixelError(String),
-    BitmapError(bmp_rust::bmp::ErrorKind)
+    BitmapError(bmp_rust::bmp::ErrorKind),
 }
 
 impl From<std::array::TryFromSliceError> for ArtconverterError {

@@ -29,7 +29,11 @@ impl ArtFile {
                     let py = y as usize;
                     let value = frame.pixels[py][px];
                     let col = &self.palette_data[0].0[value as usize];
-                    bitmap.change_color_of_pixel(x as u16, y as u16, [col.r, col.g, col.b, u8::MAX])?;
+                    bitmap.change_color_of_pixel(
+                        x as u16,
+                        y as u16,
+                        [col.r, col.g, col.b, u8::MAX],
+                    )?;
                 }
             }
             let path = Path::new(&output_filepath).join("test.bmp");
@@ -71,7 +75,7 @@ impl TryFrom<File> for ArtFile {
 
         for frame in &mut frame_data {
             frame.load(&mut file)?;
-            println!("{}", frame);
+            // println!("{:?}", frame.pixels);
         }
 
         Ok(ArtFile {
