@@ -1,3 +1,6 @@
+use bevy::prelude::*;
+use rustcarnum::RustcarnumPlugin;
+
 fn main() {
-    println!("Hello, world!");
+    App::new().add_plugins(RustcarnumPlugin).run();
 }
