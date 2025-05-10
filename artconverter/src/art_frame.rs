@@ -5,7 +5,7 @@ use crate::artconverter_error::ArtconverterError;
 #[derive(Debug)]
 pub struct ArtFrame {
     pub header: ArtFrameHeader,
-    pub pixels: Vec<u8>,
+    pub pixels: Vec<Vec<u8>>,
 }
 
 impl ArtFrame {
@@ -13,35 +13,52 @@ impl ArtFrame {
         let mut data = vec![0; self.header.size];
         file.read_exact(&mut data)?;
         let size = self.header.height * self.header.width;
-        self.pixels = Vec::with_capacity(size as usize);
+        self.pixels = vec![vec![0; self.header.width as usize]; self.header.height as usize];
+        let mut x = 0;
+        let mut y = 0;
         if self.header.size < size as usize {
-            for mut p in 0..self.header.size {
+            let mut p = 0;
+            while p < self.header.size {
+                println!("p is {}", p);
                 match data[p] & 0x80 {
                     0x80 => {
-                        let mut copies = data[p] & 0x7F;
-                        while copies > 0 {
+                        let copies = data[p] & 0x7F;
+                        for _ in 0..copies {
                             p += 1;
-                            if p >= data.len() {
-                                break;
+                            self.pixels[y][x] = data[p];
+                            x += 1;
+                            if x >= self.header.width as usize {
+                                x = 0;
+                                y += 1;
                             }
-                            self.pixels.push(data[p]);
-                            copies -= 1;
                         }
                     }
                     _ => {
-                        let mut clones = data[p] & 0x7F;
+                        let clones = data[p] & 0x7F;
                         p += 1;
                         let val = data[p];
-                        while clones > 0 {
-                            self.pixels.push(val);
-                            clones -= 1;
+                        for _ in 0..clones {
+                            self.pixels[y][x] = val;
+
+                            x += 1;
+                            if x >= self.header.width as usize {
+                                x = 0;
+                                y += 1;
+                            }
                         }
                     }
                 }
+                p += 1;
             }
         } else {
             for p in 0..self.header.size {
-                self.pixels.push(data[p]);
+                self.pixels[y][x] = data[p];
+
+                x += 1;
+                if x >= self.header.width as usize {
+                    x = 0;
+                    y += 1;
+                }
             }
         }
         Ok(())
@@ -50,7 +67,12 @@ impl ArtFrame {
 
 impl std::fmt::Display for ArtFrame {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "ArtFrame {{\n\theader: {:?}\n\tpixels: {}\n}}", self.header, self.pixels.len())
+        write!(
+            f,
+            "ArtFrame {{\n\theader: {:?}\n\tpixels: {}\n}}",
+            self.header,
+            self.pixels.len()
+        )
     }
 }
 

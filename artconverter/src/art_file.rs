@@ -25,10 +25,11 @@ impl ArtFile {
             let mut bitmap = BitMap::new(frame.header.width, frame.header.height);
             for y in (0..frame.header.height).rev() {
                 for x in 0..frame.header.width {
-                    let index = (y * frame.header.width + x) * 3;
-                    let red = frame.pixels[index as usize];
-                    let green = frame.pixels[index as usize + 1];
-                    let blue = frame.pixels[index as usize + 2];
+                    let px = x as usize;
+                    let py = y as usize;
+                    let red = frame.pixels[py][px];
+                    let green = frame.pixels[py][px];
+                    let blue = frame.pixels[py][px];
                     bitmap.set_pixel(x, y, Rgba::rgb(red, green, blue))?;
                 }
             }
