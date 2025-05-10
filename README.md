@@ -1,5 +1,15 @@
 # rustcarnum
 
+## How To Contribute
+
+Create new crates with `cargo new --lib ./crates/new_crate --vcs none`
+
+# Tools
+
+## Artconverter
+
+The artconverter is almost verbatim taken from https://github.com/AxelStrem/ArtConverter
+
 ## Reverse engineering the .dat format
 
 In his talks about the arcanum data (https://www.youtube.com/watch?v=VYw4ln0jxUY, https://www.youtube.com/watch?v=bmz6XSd7xGM), Tim mentions:
