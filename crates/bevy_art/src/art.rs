@@ -22,47 +22,39 @@ pub struct Art {
 
 #[derive(Debug, Error)]
 pub enum ArtError {
-    #[error("")]
+    #[error("Error while slicing from buffer")]
     Slice(#[from] TryFromSliceError),
 }
 
 impl Art {
     pub(crate) fn from_buffer(buffer: &[u8]) -> Result<Art, ArtError> {
         let header = ArtHeader::from_buffer(&buffer[0..ArtHeader::SIZE])?;
-        info!("{:?}", header);
         let palettes = header
             .stupid_color
             .iter()
             .filter(|&color| color.in_palette())
             .count();
         let mut current_index = ArtHeader::SIZE;
-        // println!("current index: {}", current_index);
         let mut color_table_data = Vec::new();
         for _ in 0..palettes {
             let color_table =
                 ColorTable::from_buffer(&buffer[current_index..current_index + ColorTable::SIZE])?;
             color_table_data.push(color_table);
             current_index += ColorTable::SIZE;
-            // println!("current index: {}", current_index);
         }
-        // info!("loaded {:?}", color_table_data);
 
         let mut frame_data = Vec::new();
         for _ in 0..header.frames() {
             let frame = ArtFrame::header_from_buffer(
                 &buffer[current_index..current_index + ArtFrameHeader::SIZE],
             )?;
-            info!("header {:?}", frame);
             frame_data.push(frame);
             current_index += ArtFrameHeader::SIZE;
-            // println!("current index: {}", current_index);
         }
 
         for frame in &mut frame_data {
             frame.load_pixels_from_buffer(&buffer[current_index..current_index + frame.size()])?;
-            // info!("content {:?}", frame.pixels);
             current_index += frame.size();
-            // println!("current index: {}", current_index);
         }
 
         Ok(Art {

@@ -17,7 +17,6 @@ struct ArtHandleHolder(Handle<Art>);
 
 fn load(asset_server: Res<AssetServer>, mut commands: Commands) {
     let handle: Handle<Art> = asset_server.load("dfmbnsad.ART");
-    info!("handle is {:?}", handle);
     commands.spawn(ArtHandleHolder(handle));
     commands.spawn(Camera2d);
 }
@@ -30,7 +29,6 @@ fn check(
 ) {
     let (entity, art_handle) = handle_holder.into_inner();
     if let Some(specific_art) = art.get(&art_handle.0) {
-        info!("there it is!");
         commands.spawn(ImageNode {
             image: images.add(specific_art.to_image().unwrap()),
             ..default()
