@@ -28,7 +28,6 @@ impl ArtFile {
                     let px = x as usize;
                     let py = y as usize;
                     let value = frame.pixels[py][px];
-                    println!("{}/{} val {}", x, y, value);
                     let col = &self.palette_data[0].0[value as usize];
                     bitmap.change_color_of_pixel(x as u16, y as u16, [col.r, col.g, col.b, u8::MAX])?;
                 }
