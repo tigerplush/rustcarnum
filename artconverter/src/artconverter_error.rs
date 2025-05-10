@@ -2,6 +2,8 @@
 pub enum ArtconverterError {
     IoError(std::io::Error),
     SliceConversion(std::array::TryFromSliceError),
+    BitmapSaveError(String),
+    BitmapPixelError(String),
 }
 
 impl From<std::array::TryFromSliceError> for ArtconverterError {
@@ -13,5 +15,17 @@ impl From<std::array::TryFromSliceError> for ArtconverterError {
 impl From<std::io::Error> for ArtconverterError {
     fn from(error: std::io::Error) -> Self {
         ArtconverterError::IoError(error)
+    }
+}
+
+impl From<String> for ArtconverterError {
+    fn from(error: String) -> Self {
+        ArtconverterError::BitmapSaveError(error)
+    }
+}
+
+impl From<&str> for ArtconverterError {
+    fn from(error: &str) -> Self {
+        ArtconverterError::BitmapPixelError(error.to_string())
     }
 }

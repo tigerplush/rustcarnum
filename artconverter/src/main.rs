@@ -4,6 +4,7 @@ use art_file::ArtFile;
 use clap::Parser;
 
 mod art_file;
+mod art_frame;
 mod art_header;
 mod artconverter_error;
 mod color;
@@ -24,7 +25,7 @@ fn main() -> std::io::Result<()> {
     match input_filepath.extension().and_then(OsStr::to_str) {
         Some("ART") => {
             let art_file = ArtFile::load_from_file(args.input_filepath).unwrap();
-            art_file.save_as_bmp(args.output_filepath);
+            art_file.save_as_bmp(args.output_filepath).unwrap();
         }
         Some("bmp") => {}
         _ => {
