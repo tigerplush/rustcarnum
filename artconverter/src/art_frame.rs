@@ -19,7 +19,6 @@ impl ArtFrame {
         if self.header.size < size as usize {
             let mut p = 0;
             while p < self.header.size {
-                println!("p is {}", p);
                 match data[p] & 0x80 {
                     0x80 => {
                         let copies = data[p] & 0x7F;

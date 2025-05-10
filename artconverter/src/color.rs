@@ -1,9 +1,9 @@
 #[derive(Debug)]
 pub struct Color {
-    b: u8,
-    g: u8,
-    r: u8,
-    a: u8,
+    pub b: u8,
+    pub g: u8,
+    pub r: u8,
+    pub a: u8,
 }
 
 impl TryFrom<&[u8]> for Color {

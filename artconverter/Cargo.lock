@@ -56,9 +56,15 @@ dependencies = [
 name = "artconverter"
 version = "0.1.0"
 dependencies = [
+ "bmp-rust",
  "clap",
- "rustbitmap",
 ]
+
+[[package]]
+name = "bmp-rust"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba2540205cc146e04e7bf60a2bd5313e481de2028b725d04d1ec58e26318fb4f"
 
 [[package]]
 name = "clap"
@@ -141,12 +147,6 @@ checksum = "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d"
 dependencies = [
  "proc-macro2",
 ]
-
-[[package]]
-name = "rustbitmap"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47d3a52b234d7db1aab69522b2efddf700fedca545a6eac58648724aefa211be"
 
 [[package]]
 name = "strsim"

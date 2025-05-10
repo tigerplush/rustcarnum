@@ -1,6 +1,6 @@
 use std::{fs::File, path::Path};
 
-use rustbitmap::{BitMap, Rgba};
+use bmp_rust::bmp::BMP;
 
 use crate::{
     art_frame::ArtFrame, art_header::ArtHeader, artconverter_error::ArtconverterError,
@@ -22,19 +22,19 @@ impl ArtFile {
 
     pub fn save_as_bmp(&self, output_filepath: String) -> Result<(), ArtconverterError> {
         for frame in &self.frame_data {
-            let mut bitmap = BitMap::new(frame.header.width, frame.header.height);
+            let mut bitmap = BMP::new(frame.header.width as i32, frame.header.height, None);
             for y in (0..frame.header.height).rev() {
                 for x in 0..frame.header.width {
                     let px = x as usize;
                     let py = y as usize;
-                    let red = frame.pixels[py][px];
-                    let green = frame.pixels[py][px];
-                    let blue = frame.pixels[py][px];
-                    bitmap.set_pixel(x, y, Rgba::rgb(red, green, blue))?;
+                    let value = frame.pixels[py][px];
+                    println!("{}/{} val {}", x, y, value);
+                    let col = &self.palette_data[0].0[value as usize];
+                    bitmap.change_color_of_pixel(x as u16, y as u16, [col.r, col.g, col.b, u8::MAX])?;
                 }
             }
             let path = Path::new(&output_filepath).join("test.bmp");
-            bitmap.save_as(path.to_str().unwrap())?;
+            bitmap.save_to_new(path.to_str().unwrap())?;
         }
         Ok(())
     }
