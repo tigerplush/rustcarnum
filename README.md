@@ -1,5 +1,30 @@
 # rustcarnum
 
+## ToDo
+
+1. Find out how to build the main menu.
+If you undat the arcanum data files, you get a MainMenu.mes that contains all the strings for the main menu and its submenus as well as hotkeys to the points, but:
+How does the main menu know which art file is loaded for the background? How does the main menu know which music should be played or which sounds should be played on hover and press?
+Also, the font is a bitmap font, which is quite cumbersome - how does original TIG define fonts?
+
+## General sequence of the game
+
+1. Sierra Logo (skippable)
+2. Troika Loko (skippable)
+3. Loading screen (seems to be randomized of the three available loading screens)
+4. introductory video (Knight shoots other knight) (skippable)
+5. -> dissolve into main menu (can be skipped via escape)
+    * Single Player
+        * New Game
+        * Load Game
+        * Last Save
+        * View Intro -> Shows two videos back to back, IFS Zephyr crash and finding the gnome
+        * Cancel
+    * MultiPlayer
+    * Options
+    * Credits
+    * Exit
+
 ## How To Contribute
 
 Create new crates with `cargo new --lib ./crates/new_crate --vcs none`

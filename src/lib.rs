@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 use bevy_art::*;
+use bevy_mes::{Mes, MesPlugin};
 
 pub struct RustcarnumPlugin;
 
 impl Plugin for RustcarnumPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins)
-            .add_plugins(ArtPlugin)
+            .add_plugins((ArtPlugin, MesPlugin))
             .add_systems(Startup, load)
             .add_systems(Update, check);
     }
@@ -16,8 +17,9 @@ impl Plugin for RustcarnumPlugin {
 struct ArtHandleHolder(Handle<Art>);
 
 fn load(asset_server: Res<AssetServer>, mut commands: Commands) {
-    let handle: Handle<Art> = asset_server.load("dfmbnsad.ART");
+    let handle: Handle<Art> = asset_server.load("Morph30Font.ART");
     commands.spawn(ArtHandleHolder(handle));
+    let mes_handle: Handle<Mes> = asset_server.load("MainMenu.mes");
     commands.spawn(Camera2d);
 }
 

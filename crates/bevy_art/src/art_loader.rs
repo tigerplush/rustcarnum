@@ -4,7 +4,7 @@ use thiserror::Error;
 use crate::{Art, ArtError};
 
 #[derive(Default)]
-pub struct ArtLoader {}
+pub(crate) struct ArtLoader;
 
 #[derive(Debug, Error)]
 pub enum ArtLoaderError {

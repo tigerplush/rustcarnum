@@ -1,6 +1,5 @@
 target/
 .vscode/
 
-# Added by cargo
-
-/target
+ghidra/
+assets/*

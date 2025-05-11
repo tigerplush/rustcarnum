@@ -16,6 +16,7 @@ bevy = "0.16.0"
 [dependencies]
 bevy = { workspace = true }
 bevy_art = { path = "crates/bevy_art" }
+bevy_mes = { path = "crates/bevy_mes" }
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
