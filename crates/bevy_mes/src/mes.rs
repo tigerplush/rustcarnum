@@ -18,7 +18,7 @@ pub enum MesError {
 }
 
 impl Mes {
-    pub fn from_contents(raw_content: &String) -> Result<Mes, MesError> {
+    pub fn from_contents(raw_content: &str) -> Result<Mes, MesError> {
         let mut contents = HashMap::new();
         for line in raw_content.lines() {
             let pattern = r#"^\{(\d+)\}(.*?)\{(.*?)\}(.*?)$"#;
@@ -28,15 +28,15 @@ impl Mes {
                 let optional = if let Some(m) = caps.get(2) {
                     if m.is_empty() {
                         None
-                    }
-                    else {
+                    } else {
                         Some(m.as_str().to_string())
                     }
                 } else {
                     None
                 };
-                let content = caps.get(3).map_or(String::new(), |m| m.as_str().to_string());
-                info!("{} {:?} {}", index, optional, content);
+                let content = caps
+                    .get(3)
+                    .map_or(String::new(), |m| m.as_str().to_string());
                 contents.insert(index, (optional, content));
             }
         }
@@ -44,8 +44,6 @@ impl Mes {
     }
 
     fn new(contents: HashMap<u32, (Option<String>, String)>) -> Mes {
-        Mes {
-            contents
-        }
+        Mes { contents }
     }
 }

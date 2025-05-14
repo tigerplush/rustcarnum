@@ -1,7 +1,10 @@
-use bevy::{asset::{AssetLoader, AsyncReadExt}, prelude::*};
+use bevy::{
+    asset::{AssetLoader, AsyncReadExt},
+    prelude::*,
+};
 use thiserror::Error;
 
-use crate::{mes::MesError, Mes};
+use crate::{Mes, mes::MesError};
 
 #[derive(Default)]
 pub struct MesLoader;
@@ -20,17 +23,17 @@ impl AssetLoader for MesLoader {
     type Error = MesLoaderError;
 
     async fn load(
-            &self,
-            reader: &mut dyn bevy::asset::io::Reader,
-            _settings: &Self::Settings,
-            _load_context: &mut bevy::asset::LoadContext<'_>,
-        ) -> Result<Self::Asset, Self::Error> {
-            let mut contents = String::new();
+        &self,
+        reader: &mut dyn bevy::asset::io::Reader,
+        _settings: &Self::Settings,
+        _load_context: &mut bevy::asset::LoadContext<'_>,
+    ) -> Result<Self::Asset, Self::Error> {
+        let mut contents = String::new();
         reader.read_to_string(&mut contents).await?;
         Ok(Mes::from_contents(&contents)?)
     }
 
     fn extensions(&self) -> &[&str] {
-        &[".mes"]
+        &["mes"]
     }
 }
