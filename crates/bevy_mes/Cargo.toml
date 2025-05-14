@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 bevy = { workspace = true }
-thiserror = "2.0.12"
+thiserror = { workspace = true }
 regex = "1.11.1"

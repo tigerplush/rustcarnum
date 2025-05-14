@@ -1,40 +1,37 @@
-use bevy::prelude::*;
-use bevy_art::*;
-use bevy_mes::{Mes, MesPlugin};
+use bevy::{asset::LoadedFolder, prelude::*};
+use bevy_art::ArtPlugin;
+use bevy_dat::DatPlugin;
+use bevy_mes::MesPlugin;
 
 pub struct RustcarnumPlugin;
 
 impl Plugin for RustcarnumPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins)
-            .add_plugins((ArtPlugin, MesPlugin))
+            .add_plugins((ArtPlugin, DatPlugin, MesPlugin))
             .add_systems(Startup, load)
-            .add_systems(Update, check);
+            .add_systems(Update, check_2);
     }
 }
 
 #[derive(Component)]
-struct ArtHandleHolder(Handle<Art>);
+struct FolderHandleHolder(Handle<LoadedFolder>);
 
 fn load(asset_server: Res<AssetServer>, mut commands: Commands) {
-    let handle: Handle<Art> = asset_server.load("Morph30Font.ART");
-    commands.spawn(ArtHandleHolder(handle));
-    let mes_handle: Handle<Mes> = asset_server.load("MainMenu.mes");
+    let folder_handle = asset_server.load_folder(".");
     commands.spawn(Camera2d);
+    commands.spawn(FolderHandleHolder(folder_handle));
 }
 
-fn check(
-    handle_holder: Single<(Entity, &ArtHandleHolder)>,
-    art: Res<Assets<Art>>,
-    mut images: ResMut<Assets<Image>>,
-    mut commands: Commands,
+fn check_2(
+    mut events: EventReader<AssetEvent<LoadedFolder>>,
+    handle_holder: Single<(Entity, &FolderHandleHolder)>,
+    folders: Res<Assets<LoadedFolder>>,
 ) {
-    let (entity, art_handle) = handle_holder.into_inner();
-    if let Some(specific_art) = art.get(&art_handle.0) {
-        commands.spawn(ImageNode {
-            image: images.add(specific_art.to_image().unwrap()),
-            ..default()
-        });
-        commands.entity(entity).despawn();
+    let (entity, folder_handle) = handle_holder.into_inner();
+    for event in events.read() {
+        if event.is_loaded_with_dependencies(&folder_handle.0) {
+            info!("loaded all");
+        }
     }
 }
