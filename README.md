@@ -54,3 +54,9 @@ Observations:
 this: https://rpgcodex.net/forums/threads/arcanum-multiverse-edition.114150/page-30 mentions:
 * there is a 28 byte footer at the end, consisting of a 16character uuid, a "magic number" that should be `1TAD` to mark a valid file, size of bytes of all filenames together and sum of bytes of everything written that isn't a deflate stream
 * every entry consists of a filename, a crc or offset value, a type (0x00000400 for dir, 0x00000002 for deflate stream and 0x00000001 for a directly stored information), original size, deflate size and offset
+
+## Resources
+
+https://f3mic.github.io/index.html
+
+https://www.reddit.com/r/bevy/comments/1i83wv5/tutorial_how_to_load_inmemory_assets_in_bevy/
