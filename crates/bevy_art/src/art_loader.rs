@@ -31,6 +31,6 @@ impl AssetLoader for ArtLoader {
     }
 
     fn extensions(&self) -> &[&str] {
-        &["ART"]
+        &["art", "ART"]
     }
 }
