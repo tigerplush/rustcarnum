@@ -29,6 +29,14 @@ Also, the font is a bitmap font, which is quite cumbersome - how does original T
 
 Create new crates with `cargo new --lib ./crates/new_crate --vcs none`
 
+## Observations
+
+* arcanum.cfg will be created and filled with default values if its missing
+* game doesn't start without tig.dat
+* game starts but crashes after splashscreen without arcanum1.dat or arcanum2.dat
+* game doesn't start without arcanum3.dat
+* game seems to run fine without arcanum4.dat
+
 # Tools
 
 ## Artconverter

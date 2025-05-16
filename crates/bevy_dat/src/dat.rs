@@ -3,6 +3,7 @@ use std::{array::TryFromSliceError, num::TryFromIntError, str::Utf8Error};
 use bevy::prelude::*;
 use serde::Deserialize;
 use thiserror::Error;
+use zune_inflate::DeflateDecoder;
 
 #[derive(Asset, Debug, TypePath)]
 pub struct Dat {
@@ -49,6 +50,22 @@ impl Dat {
             raw: buffer.to_vec(),
         })
     }
+
+    pub fn entries(&self) -> &Vec<DatEntry> {
+        &self.entries
+    }
+
+    pub fn bytes(&self, entry: &DatEntry) -> Vec<u8> {
+        match entry.entry_type {
+            DatEntryType::Directory => vec![],
+            DatEntryType::Stored => self.raw[entry.offset..entry.offset + entry.original_size].to_vec(),
+            DatEntryType::Compressed => {
+                let mut decoder =
+                    DeflateDecoder::new(&self.raw[entry.offset..entry.offset + entry.deflate_size]);
+                    decoder.decode_zlib().unwrap()
+            }
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -87,12 +104,12 @@ pub enum DatEntryType {
 
 #[derive(Debug)]
 pub struct DatEntry {
-    filename: String,
+    pub filename: String,
     unk_value: u32,
-    pub entry_type: DatEntryType,
-    pub original_size: usize,
-    pub deflate_size: usize,
-    pub offset: usize,
+    pub(crate) entry_type: DatEntryType,
+    pub(crate) original_size: usize,
+    pub(crate) deflate_size: usize,
+    pub(crate) offset: usize,
     mystery_number: u32,
 }
 

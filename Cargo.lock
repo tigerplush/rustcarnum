@@ -562,6 +562,7 @@ dependencies = [
  "bevy",
  "serde",
  "thiserror 2.0.12",
+ "zune-inflate",
 ]
 
 [[package]]

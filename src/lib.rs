@@ -1,37 +1,68 @@
-use bevy::{asset::LoadedFolder, prelude::*};
+use std::path::Path;
+
+use bevy::{asset::io::memory::Dir, prelude::*};
 use bevy_art::ArtPlugin;
-use bevy_dat::DatPlugin;
+use bevy_dat::{Dat, DatPlugin};
 use bevy_mes::MesPlugin;
 
 pub struct RustcarnumPlugin;
 
 impl Plugin for RustcarnumPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(DefaultPlugins)
-            .add_plugins((ArtPlugin, DatPlugin, MesPlugin))
-            .add_systems(Startup, load)
-            .add_systems(Update, check_2);
+        app.add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                resolution: (800., 800.).into(),
+                title: "Arcanum".into(),
+                name: Some("Arcanum".into()),
+                resizable: false,
+                ..default()
+            }),
+            ..default()
+        }))
+        .add_plugins((ArtPlugin, DatPlugin, MesPlugin))
+        .add_systems(Startup, load)
+        .add_systems(Update, build_repo);
     }
 }
 
-#[derive(Component)]
-struct FolderHandleHolder(Handle<LoadedFolder>);
+#[derive(Component, Deref)]
+struct DatFiles(Vec<Handle<Dat>>);
 
 fn load(asset_server: Res<AssetServer>, mut commands: Commands) {
-    let folder_handle = asset_server.load_folder(".");
     commands.spawn(Camera2d);
-    commands.spawn(FolderHandleHolder(folder_handle));
+    commands.spawn(DatFiles(vec![
+        asset_server.load("tig.dat"),
+        asset_server.load("arcanum1.dat"),
+        asset_server.load("arcanum2.dat"),
+        asset_server.load("arcanum3.dat"),
+        asset_server.load("Arcanum4.dat"),
+    ]));
 }
 
-fn check_2(
-    mut events: EventReader<AssetEvent<LoadedFolder>>,
-    handle_holder: Single<(Entity, &FolderHandleHolder)>,
-    folders: Res<Assets<LoadedFolder>>,
-) {
-    let (entity, folder_handle) = handle_holder.into_inner();
-    for event in events.read() {
-        if event.is_loaded_with_dependencies(&folder_handle.0) {
-            info!("loaded all");
+#[derive(Component, Default)]
+struct DatRepo {
+    dir: Dir,
+}
+
+impl DatRepo {
+    fn add(&mut self, dat: &Dat) {
+        for entry in dat.entries() {
+            self.dir.insert_asset(Path::new(&entry.filename), dat.bytes(entry));
         }
+    }
+}
+
+fn build_repo(dat_files: Single<(Entity, &DatFiles)>, asset_server: Res<AssetServer>, dats: Res<Assets<Dat>>, mut commands: Commands) {
+    let (entity, handles) = dat_files.into_inner();
+    if handles.iter().all(|handle| asset_server.is_loaded(handle)) {
+        let mut repo = DatRepo::default();
+        for handle in &handles.0 {
+            if let Some(dat) = dats.get(handle) {
+                repo.add(dat);
+            }
+        }
+        commands.spawn(repo);
+        commands.entity(entity).despawn();
+        info!("repo done");
     }
 }
