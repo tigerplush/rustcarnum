@@ -1,0 +1,10 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true }
+bevy_art = { path = "../bevy_art" }
+bevy_dat = { path = "../bevy_dat" }
+bevy_mes = { path = "../bevy_mes" }
