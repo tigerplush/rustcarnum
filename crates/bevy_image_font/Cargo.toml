@@ -1,0 +1,9 @@
+[package]
+name = "bevy_image_font"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true }
+thiserror = { workspace = true }
+bevy_art = { path = "../bevy_art" }
