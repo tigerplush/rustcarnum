@@ -5,9 +5,8 @@ use serde::Deserialize;
 use thiserror::Error;
 use zune_inflate::DeflateDecoder;
 
-#[derive(Asset, Debug, TypePath)]
+#[derive(Asset, Clone, Debug, TypePath)]
 pub struct Dat {
-    footer: DatFooter,
     entries: Vec<DatEntry>,
     raw: Vec<u8>,
 }
@@ -31,10 +30,9 @@ pub enum DatError {
 impl Dat {
     pub(crate) fn from_buffer(buffer: &[u8]) -> Result<Dat, DatError> {
         let footer = DatFooter::from_buffer(&buffer[buffer.len() - DatFooter::SIZE..])?;
-        info!("{:?}", footer);
 
         let filetable_start = buffer.len() - footer.dat_entry_start_from_end;
-        let num_entries =
+        let _num_entries =
             u32::from_le_bytes(buffer[filetable_start..filetable_start + 4].try_into()?);
         let mut current_entry_ptr = filetable_start + 8;
         let mut entries = Vec::new();
@@ -43,9 +41,7 @@ impl Dat {
             current_entry_ptr += entry.len();
             entries.push(entry);
         }
-        info!("loaded {} from {} entries", entries.len(), num_entries);
         Ok(Dat {
-            footer,
             entries,
             raw: buffer.to_vec(),
         })
@@ -58,13 +54,27 @@ impl Dat {
     pub fn bytes(&self, entry: &DatEntry) -> Vec<u8> {
         match entry.entry_type {
             DatEntryType::Directory => vec![],
-            DatEntryType::Stored => self.raw[entry.offset..entry.offset + entry.original_size].to_vec(),
+            DatEntryType::Stored => {
+                self.raw[entry.offset..entry.offset + entry.original_size].to_vec()
+            }
             DatEntryType::Compressed => {
                 let mut decoder =
                     DeflateDecoder::new(&self.raw[entry.offset..entry.offset + entry.deflate_size]);
-                    decoder.decode_zlib().unwrap()
+                decoder.decode_zlib().unwrap()
             }
         }
+    }
+
+    pub fn get(&self, pattern: &str) -> Option<&DatEntry> {
+        self.entries.iter().find(|entry| entry.filename == pattern)
+    }
+
+    pub fn get_fn(&self, pattern: impl Fn(&String) -> bool) -> Option<&DatEntry> {
+        self.entries.iter().find(|entry| pattern(&entry.filename))
+    }
+
+    pub fn pop(&mut self) -> Option<DatEntry> {
+        self.entries.pop()
     }
 }
 
@@ -95,14 +105,14 @@ impl DatFooter {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum DatEntryType {
     Stored,
     Compressed,
     Directory,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct DatEntry {
     pub filename: String,
     unk_value: u32,
