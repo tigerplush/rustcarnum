@@ -23,7 +23,7 @@ fn main() -> std::io::Result<()> {
     let args = Settings::parse();
     let input_filepath = Path::new(&args.input_filepath);
     match input_filepath.extension().and_then(OsStr::to_str) {
-        Some("ART") => {
+        Some("ART") | Some("art") => {
             let art_file = ArtFile::load_from_file(args.input_filepath).unwrap();
             art_file.save_as_bmp(args.output_filepath).unwrap();
         }

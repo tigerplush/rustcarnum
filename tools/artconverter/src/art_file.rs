@@ -21,8 +21,10 @@ impl ArtFile {
     }
 
     pub fn save_as_bmp(&self, output_filepath: String) -> Result<(), ArtconverterError> {
-        for frame in &self.frame_data {
-            let mut bitmap = BMP::new(frame.header.width as i32, frame.header.height, None);
+        // let width = self.frame_data.iter().map(|frame| frame.header.width).sum::<u32>();
+        // let height = self.frame_data.iter().map(|frame| frame.header.height).max().unwrap();
+        for (index, frame) in self.frame_data.iter().enumerate() {
+            let mut bitmap = BMP::new(frame.header.height as i32, frame.header.width, None);
             for y in (0..frame.header.height).rev() {
                 for x in 0..frame.header.width {
                     let px = x as usize;
@@ -36,7 +38,7 @@ impl ArtFile {
                     )?;
                 }
             }
-            let path = Path::new(&output_filepath).join("test.bmp");
+            let path = Path::new(&output_filepath).join(format!("test_{}.bmp", index));
             bitmap.save_to_new(path.to_str().unwrap())?;
         }
         Ok(())
