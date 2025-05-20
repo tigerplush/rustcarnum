@@ -4,7 +4,7 @@ use bevy::{platform::collections::HashMap, prelude::*};
 use regex::Regex;
 use thiserror::Error;
 
-#[derive(Asset, TypePath)]
+#[derive(Asset, Clone, Debug, TypePath)]
 pub struct Mes {
     pub contents: HashMap<u32, (Option<String>, String)>,
 }

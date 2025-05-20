@@ -11,7 +11,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-bevy = "0.16.0"
+bevy = { version="0.16.0", features = ["bmp"]}
 serde = "1.0.219"
 thiserror = "2.0.12"
 
@@ -19,7 +19,13 @@ thiserror = "2.0.12"
 bevy = { workspace = true }
 bevy_art = { path = "crates/bevy_art" }
 bevy_dat = { path = "crates/bevy_dat" }
+bevy_image_font = { path = "crates/bevy_image_font" }
 bevy_mes = { path = "crates/bevy_mes" }
+common = { path = "crates/common" }
+dat_repo = { path = "crates/dat_repo" }
+loading = { path = "crates/loading" }
+main_menu = { path = "crates/main_menu" }
+video = { path = "crates/video" }
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
