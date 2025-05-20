@@ -20,14 +20,42 @@ pub struct Art {
     frame_data: Vec<ArtFrame>,
 }
 
+pub type TigArtId = u32;
+const ART_ID_TYPE_SHIFT: u32 = 28;
+
+pub const ART_TYPE_INTERFACE: u32 = 5;
+const INTERFACE_ID_MAX_NUM: u32 = 4096;
+const INTERFACE_ID_NUM_SHIFT: u32 = 16;
+
+pub fn art_id_create(num: u32, frame: u32, a3: u8, palette: u32) -> Result<TigArtId, ()> {
+    let art_id = (ART_TYPE_INTERFACE << ART_ID_TYPE_SHIFT)
+        | ((num & (INTERFACE_ID_MAX_NUM - 1)) << INTERFACE_ID_NUM_SHIFT);
+    Ok(art_id)
+}
+
+pub fn art_type(art_id: TigArtId) -> u32 {
+    art_id >> ART_ID_TYPE_SHIFT
+}
+
+#[test]
+fn test_interface() {
+    // assert_eq!(art_id_create(327, 0, 0, 0), Ok(u32::MAX));
+    assert_eq!(
+        art_type(art_id_create(327, 0, 0, 0).unwrap()),
+        ART_TYPE_INTERFACE
+    );
+}
+
 #[derive(Debug, Error)]
 pub enum ArtError {
     #[error("Error while slicing from buffer")]
     Slice(#[from] TryFromSliceError),
+    #[error("FrameData contained 0 frames")]
+    EmptyFrame,
 }
 
 impl Art {
-    pub(crate) fn from_buffer(buffer: &[u8]) -> Result<Art, ArtError> {
+    pub fn from_buffer(buffer: &[u8]) -> Result<Art, ArtError> {
         let header = ArtHeader::from_buffer(&buffer[0..ArtHeader::SIZE])?;
         let palettes = header
             .stupid_color
@@ -65,7 +93,7 @@ impl Art {
         })
     }
 
-    pub fn to_image(&self) -> Option<Image> {
+    pub fn to_image(&self) -> Result<Image, ArtError> {
         // accumulate width, so we can place all frames next to each other
         let width = self
             .frame_data
@@ -76,20 +104,29 @@ impl Art {
             .frame_data
             .iter()
             .map(|frame| frame.header.height)
-            .max()?;
+            .max()
+            .ok_or(ArtError::EmptyFrame)?;
+        info!("w {}, h {}", width, height);
         let mut data = vec![0; width as usize * height as usize * 4];
         let mut offset = 0;
         for frame in &self.frame_data {
             for y in (0..frame.header.height as usize).rev() {
                 for x in 0..frame.width() {
                     let sample = frame.pixels[y][x] as usize;
-                    let color = &self.color_table_data[0].0[sample];
                     let target_x = x + offset;
                     let index = (y * width as usize + target_x) * 4;
-                    data[index] = color.r;
-                    data[index + 1] = color.g;
-                    data[index + 2] = color.b;
-                    data[index + 3] = color.opacity();
+                    match sample {
+                        0 => {
+                            data[index + 3] = 0;
+                        }
+                        _ => {
+                            let color = &self.color_table_data[0].0[sample];
+                            data[index] = color.r;
+                            data[index + 1] = color.g;
+                            data[index + 2] = color.b;
+                            data[index + 3] = color.opacity();
+                        }
+                    };
                 }
             }
             offset += frame.width();
@@ -105,7 +142,26 @@ impl Art {
             TextureFormat::Rgba8UnormSrgb,
             RenderAssetUsages::all(),
         );
-        Some(image)
+        Ok(image)
+    }
+
+    pub fn to_texture_atlas(&self) -> TextureAtlasLayout {
+        let columns = self.frame_data.len() as u32;
+        let mut textures = vec![];
+        let mut current_x = 0;
+        for frame in &self.frame_data {
+            textures.push(URect::new(
+                current_x,
+                frame.header.height,
+                current_x + frame.header.width,
+                0,
+            ));
+            current_x += frame.header.width;
+        }
+        TextureAtlasLayout {
+            size: UVec2::new(1, columns),
+            textures,
+        }
     }
 }
 
