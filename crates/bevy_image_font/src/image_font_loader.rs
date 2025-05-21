@@ -1,4 +1,4 @@
-use bevy::asset::AssetLoader;
+use bevy::asset::{AssetLoader, LoadedAsset};
 use bevy_art::{Art, ArtError};
 use thiserror::Error;
 
@@ -21,20 +21,20 @@ impl AssetLoader for ImageFontLoader {
     type Error = ImageFontLoaderError;
 
     async fn load(
-            &self,
-            reader: &mut dyn bevy::asset::io::Reader,
-            _settings: &Self::Settings,
-            load_context: &mut bevy::asset::LoadContext<'_>,
-        ) -> Result<Self::Asset, Self::Error> {
-            let mut bytes = Vec::new();
-            reader.read_to_end(&mut bytes).await?;
-            let art = Art::from_buffer(&bytes)?;
-            let image = art.to_image()?;
-            let texture_atlas = art.to_texture_atlas();
-
+        &self,
+        reader: &mut dyn bevy::asset::io::Reader,
+        _settings: &Self::Settings,
+        load_context: &mut bevy::asset::LoadContext<'_>,
+    ) -> Result<Self::Asset, Self::Error> {
+        let mut bytes = Vec::new();
+        reader.read_to_end(&mut bytes).await?;
+        let art = Art::from_buffer(&bytes)?;
+        let image = art.to_image()?;
+        let texture_atlas = art.to_texture_atlas();
         Ok(ImageFont {
-            image: load_context.add_labeled_asset("huh".into(), image),
-            texture_atlas_layout: load_context.add_labeled_asset("huh".into(), texture_atlas),
+            image: load_context.add_labeled_asset("image".into(), image),
+            texture_atlas_layout: load_context
+                .add_labeled_asset("texture_atlas_layout".into(), texture_atlas),
         })
     }
 

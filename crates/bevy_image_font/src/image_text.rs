@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
-#[derive(Component)]
-#[require(Node)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+#[require(ImageNode)]
 pub struct ImageText(pub String);
 
 impl ImageText {

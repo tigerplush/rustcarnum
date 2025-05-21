@@ -7,7 +7,7 @@ use bevy::{
 };
 use bevy_art::ArtPlugin;
 use bevy_dat::{Dat, DatPlugin};
-use bevy_image_font::ImageFontPlugin;
+use bevy_image_font::ImageTextPlugin;
 use bevy_mes::MesPlugin;
 use common::state::AppState;
 use dat_repo::DatRepo;
@@ -48,7 +48,7 @@ impl Plugin for RustcarnumPlugin {
         .insert_resource(ClearColor(BLACK.into()))
         .init_state::<AppState>()
         .enable_state_scoped_entities::<AppState>()
-        .add_plugins((ArtPlugin, DatPlugin, ImageFontPlugin, MesPlugin))
+        .add_plugins((ArtPlugin, DatPlugin, ImageTextPlugin, MesPlugin))
         .add_plugins((loading::plugin, main_menu::plugin, video::plugin))
         .add_systems(Startup, setup)
         .add_systems(

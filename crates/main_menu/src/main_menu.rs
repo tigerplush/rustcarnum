@@ -28,26 +28,25 @@ fn setup(dat_repo: Res<DatRepo>, asset_server: Res<AssetServer>, mut commands: C
             StateScoped(AppState::MainMenu),
         ))
         .with_children(|parent| {
+            // parent.spawn((ImageNode {
+            //     image: asset_server.load(&font),
+            //     ..default()
+            // },
+            //     Node {
+            //         align_self: AlignSelf::Center,
+            //         justify_self: JustifySelf::Center,
+            //         ..default()
+            //     },));
             parent.spawn((
-                ImageNode {
-                    image: asset_server.load(&font),
-                    texture_atlas: Some(TextureAtlas {
-                        index: 2,
-                        layout: asset_server.load(&font),
-                    }),
-                    ..default()
+                ImageText::new("Hallo Nico"),
+                ImageTextFont {
+                    font: asset_server.load(&font),
                 },
                 Node {
                     align_self: AlignSelf::Center,
                     justify_self: JustifySelf::Center,
                     ..default()
                 },
-            ));
-            parent.spawn((
-                ImageText::new("Start"),
-                ImageTextFont {
-                    font: asset_server.load(&font),
-                }
             ));
         });
 }

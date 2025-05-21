@@ -7,3 +7,4 @@ edition = "2024"
 bevy = { workspace = true }
 thiserror = { workspace = true }
 bevy_art = { path = "../bevy_art" }
+image = "0.25.6"
