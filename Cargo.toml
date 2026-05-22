@@ -11,7 +11,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-bevy = { version="0.16.0", features = ["bmp"]}
+bevy = { version="0.18.0", features = ["bmp", "mp3"]}
 serde = "1.0.219"
 thiserror = "2.0.12"
 

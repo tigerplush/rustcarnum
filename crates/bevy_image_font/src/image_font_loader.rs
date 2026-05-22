@@ -1,10 +1,10 @@
-use bevy::asset::{AssetLoader, LoadedAsset};
+use bevy::{asset::{AssetLoader, LoadedAsset}, reflect::TypePath};
 use bevy_art::{Art, ArtError};
 use thiserror::Error;
 
 use crate::ImageFont;
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct ImageFontLoader;
 
 #[derive(Debug, Error)]

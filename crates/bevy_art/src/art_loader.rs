@@ -1,12 +1,12 @@
 use bevy::{
     asset::{AssetLoader, LoadContext},
-    image::{Image, TextureAtlasLayout},
+    image::{Image, TextureAtlasLayout}, reflect::TypePath,
 };
 use thiserror::Error;
 
 use crate::{Art, ArtError};
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct ArtLoader;
 
 #[derive(Debug, Error)]
@@ -38,7 +38,7 @@ impl AssetLoader for ArtLoader {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct ArtImageLoader;
 
 impl AssetLoader for ArtImageLoader {
@@ -63,7 +63,7 @@ impl AssetLoader for ArtImageLoader {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct ArtTextureAtlasLayoutLoader;
 
 impl AssetLoader for ArtTextureAtlasLayoutLoader {

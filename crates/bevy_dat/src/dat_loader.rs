@@ -3,7 +3,7 @@ use thiserror::Error;
 
 use crate::dat::{Dat, DatError};
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct DatLoader;
 
 #[derive(Debug, Error)]

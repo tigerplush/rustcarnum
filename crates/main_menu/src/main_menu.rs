@@ -25,7 +25,7 @@ fn setup(dat_repo: Res<DatRepo>, asset_server: Res<AssetServer>, mut commands: C
                 justify_content: JustifyContent::Center,
                 ..default()
             },
-            StateScoped(AppState::MainMenu),
+            DespawnOnExit(AppState::MainMenu),
         ))
         .with_children(|parent| {
             // parent.spawn((ImageNode {

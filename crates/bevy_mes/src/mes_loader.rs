@@ -6,7 +6,7 @@ use thiserror::Error;
 
 use crate::{Mes, mes::MesError};
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub struct MesLoader;
 
 #[derive(Debug, Error)]

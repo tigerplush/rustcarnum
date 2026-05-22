@@ -29,7 +29,7 @@ pub enum ImageFontRenderError {
 }
 
 fn sync(
-    mut events: EventReader<AssetEvent<ImageFont>>,
+    mut events: MessageReader<AssetEvent<ImageFont>>,
     mut query: Query<(&mut ImageText, &ImageTextFont)>,
 ) {
     let mut changed_fonts = HashSet::new();

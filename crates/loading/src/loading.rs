@@ -22,7 +22,7 @@ fn setup(mut repo: ResMut<DatRepo>, asset_server: Res<AssetServer>, mut commands
             justify_self: JustifySelf::Center,
             ..default()
         },
-        StateScoped(AppState::Loading),
+        DespawnOnExit(AppState::Loading),
     ));
 
     let mes = [

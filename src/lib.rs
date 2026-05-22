@@ -1,9 +1,8 @@
 use bevy::{
-    asset::io::{AssetSource, AssetSourceId, memory::MemoryAssetReader},
+    asset::io::{AssetSourceBuilder, AssetSourceId, memory::MemoryAssetReader},
     color::palettes::css::BLACK,
     image::ImageSamplerDescriptor,
     prelude::*,
-    window::WindowMode,
 };
 use bevy_art::ArtPlugin;
 use bevy_dat::{Dat, DatPlugin};
@@ -21,14 +20,14 @@ impl Plugin for RustcarnumPlugin {
             root: dat_repo.dir.clone(),
         };
         app.register_asset_source(
-            AssetSourceId::from_static("memory"),
-            AssetSource::build().with_reader(move || Box::new(reader.clone())),
+            "memory",
+            AssetSourceBuilder::new(move || Box::new(reader.clone())),
         )
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        resolution: (800., 800.).into(),
+                        resolution: (800, 600).into(),
                         title: "Arcanum".into(),
                         name: Some("Arcanum".into()),
                         resizable: false,
@@ -47,7 +46,6 @@ impl Plugin for RustcarnumPlugin {
         .insert_resource(dat_repo)
         .insert_resource(ClearColor(BLACK.into()))
         .init_state::<AppState>()
-        .enable_state_scoped_entities::<AppState>()
         .add_plugins((ArtPlugin, DatPlugin, ImageTextPlugin, MesPlugin))
         .add_plugins((loading::plugin, main_menu::plugin, video::plugin))
         .add_systems(Startup, setup)
